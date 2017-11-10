@@ -1,0 +1,30 @@
+{
+    "name": "ppalmtag/paypal_transaction_report",
+    "type": "library",
+    "description": "Simple Class to import PayPal Transaction Report.",
+    "keywords": [
+        "paypal",
+        "report"
+    ],
+    "support": {
+        "issues": "https://github.com/ppalmtag/paypal_transaction_report/issues",
+        "source": "https://github.com/ppalmtag/paypal_transaction_report"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Philipp Palmtag"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "PayPalReport\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
