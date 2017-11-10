@@ -154,7 +154,7 @@ class PayPalTransactionReport {
 
             // set the data
             if (!$this->setData($data)) {
-                throw new Exception('Failed setting '.$data[0]);
+                throw new \Exception('Failed setting '.$data[0]);
             }
         }
         return $this;
