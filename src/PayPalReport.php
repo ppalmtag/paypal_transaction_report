@@ -139,12 +139,17 @@ class PayPalTransactionReport {
      *
      * @param string $csv_data
      * @return PayPalTransactionReport
-     * @throws Exception
+     * @throws \Exception
      */
     public function readReport(string $csv_data): PayPalTransactionReport
     {
-        // read file in array
-        $lines = explode("\n", $csv_data);
+        // remove BOM marker if necessary
+        if (strpos($csv_data, "\xEF\xBB\xBF") === 0) {
+            $csv_data = substr($csv_data, 3);
+        }
+
+        // read file in array, remove emtpy line at end
+        $lines = explode("\n", rtrim($csv_data));
 
         // parse lines put data in array
         foreach ($lines as $line) {
