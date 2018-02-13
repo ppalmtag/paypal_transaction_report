@@ -148,7 +148,7 @@ class PayPalTransactionReport {
             $csv_data = substr($csv_data, 3);
         }
 
-        // read file in array, remove emtpy line at end
+        // read file in array
         $lines = explode("\n", rtrim($csv_data));
 
         // parse lines put data in array
