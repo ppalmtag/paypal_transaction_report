@@ -48,7 +48,7 @@ class PayPalTransactionReport {
      * RH
      * Report Header Data
      *
-     * @var type
+     * @var array
      */
     private $report_header = [
         'generation_date' => null,
@@ -62,14 +62,15 @@ class PayPalTransactionReport {
      * File Header Data
      * The sequence number of the file in the report
      *
-     * @var type
+     * @var int
      */
     private $file_header;
 
     /**
      * SH
+     * Section Header Data
      *
-     * @var type
+     * @var array
      */
     private $section_header = [
         'reporting_period_start_date' => null,
@@ -80,9 +81,9 @@ class PayPalTransactionReport {
 
     /**
      * CH
-     * Section Body Data
+     * Column Header Data
      *
-     * @var type
+     * @var array
      */
     private $column_header;
 
@@ -90,7 +91,7 @@ class PayPalTransactionReport {
      * SB
      * Section Body Data
      *
-     * @var type
+     * @var array
      */
     private $row_data = [];
 
@@ -98,7 +99,7 @@ class PayPalTransactionReport {
      * SF
      * Section Footer Data
      *
-     * @var type
+     * @var int
      */
     private $section_footer;
 
@@ -106,7 +107,7 @@ class PayPalTransactionReport {
      * SC
      * Section Record Count Data
      *
-     * @var type
+     * @var int
      */
     private $section_record_count;
 
@@ -114,7 +115,7 @@ class PayPalTransactionReport {
      * RF
      * Report Footer Data
      *
-     * @var type
+     * @var int
      */
     private $report_footer;
 
@@ -122,7 +123,7 @@ class PayPalTransactionReport {
      * RC
      * Report Record Count Data
      *
-     * @var type
+     * @var int
      */
     private $report_record_count;
 
@@ -130,7 +131,7 @@ class PayPalTransactionReport {
      * FF
      * File Footer Data
      *
-     * @var type
+     * @var int
      */
     private $file_footer;
 
@@ -153,13 +154,11 @@ class PayPalTransactionReport {
 
         // parse lines put data in array
         foreach ($lines as $line) {
-            // fix user comments
-            $fixed_line = $this->fixUserComments($line);
-            $data = str_getcsv($fixed_line, self::CSV_DELIMITER, '"', '"');
+            $data = str_getcsv($line, self::CSV_DELIMITER, '"', '"');
 
             // set the data
             if (!$this->setData($data)) {
-                throw new \Exception('Failed setting '.$data[0]);
+                throw new \Exception('Failed setting '.$data[0].' '.print_r($data, true));
             }
         }
         return $this;
@@ -177,8 +176,6 @@ class PayPalTransactionReport {
      */
     private function setData(array $data): bool
     {
-        $success = false;
-
         switch ($data[0]) {
             case 'RH':
                 $success = $this->setReportHeaderData($data);
@@ -415,31 +412,6 @@ class PayPalTransactionReport {
         $this->section_header['partner_account_id'] = null;
 
         return $this;
-    }
-
-
-    /* ---------- Utility ---------- */
-
-    /**
-     * Escapes unescaped double quotes in data from the given line
-     *
-     * @param string $line
-     * @return string
-     */
-    private function fixUserComments(string $line): string
-    {
-        // only modify data rows, ignore others
-        if (substr($line, 0, 4) !== '"SB"') {
-            return $line;
-        }
-
-        $parts = explode(self::CSV_DELIMITER, $line);
-        $new_parts = [];
-        foreach ($parts as $part) {
-            $new_parts[] = preg_replace('/(?!^.?)"(?!.{0}$)/', '""', $part);
-        }
-
-        return implode(self::CSV_DELIMITER, $new_parts);
     }
 
 
